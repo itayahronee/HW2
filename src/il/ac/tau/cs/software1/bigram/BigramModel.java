@@ -113,8 +113,31 @@ public class BigramModel {
      * @post: mBigramCounts = prev(mBigramCounts)
      */
     public int[][] buildCountsArray(String fileName, String[] vocabulary) throws IOException { // Question 2
-        // TODO: implement
-        return null;
+        int[][] counts = new int[vocabulary.length][vocabulary.length];
+        File textfile = new File(fileName);
+        BufferedReader BufferedReader = new BufferedReader(new FileReader(textfile));
+        String line;
+        String[] tokens;
+        while ( (line = BufferedReader.readLine()) != null) {// read each line of the file
+            tokens = line.trim().split("\\s+");// split the line into tokens by whitespace
+            if (tokens.length > 1){
+                String prevWord = normalizeWord(tokens[0]);
+                for (int i = 1; i < tokens.length; i++) {
+                    String currWord = normalizeWord(tokens[i]);
+                    if (prevWord != null && currWord != null) {
+                        int prevIndex = findIndex(vocabulary, prevWord);
+                        int currIndex = findIndex(vocabulary, currWord);
+                        if (prevIndex != ELEMENT_NOT_FOUND && currIndex != ELEMENT_NOT_FOUND) {
+                            counts[prevIndex][currIndex]++;
+                        }
+                    }
+                    prevWord = currWord;
+                }
+            }
+            
+        }
+        BufferedReader.close();
+        return counts;
     }
 
     /*
