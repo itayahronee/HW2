@@ -147,12 +147,12 @@ public class BigramModel {
     public void saveModel(String fileName) throws IOException { // Question 3
         BufferedWriter vocWriter = new BufferedWriter(new FileWriter(fileName + VOC_FILE_SUFFIX));
         vocWriter.write(mVocabulary.length + " words" + System.lineSeparator());
-        for (int i = 0; i < mVocabulary.length; i++) {
+        for (int i = 0; i < mVocabulary.length; i++) {// write the index and the word to the vocabulary file
             vocWriter.write(i + "," + mVocabulary[i] + System.lineSeparator());
         }
         vocWriter.close();
         BufferedWriter countsWriter = new BufferedWriter(new FileWriter(fileName + COUNTS_FILE_SUFFIX));
-        for(int i = 0; i < mBigramCounts.length; i++) {
+        for(int i = 0; i < mBigramCounts.length; i++) {// write the counts to the counts file
             for (int j = 0; j < mBigramCounts[i].length; j++) {
                 if (mBigramCounts[i][j] > 0) {
                     countsWriter.write(i + "," + j + ":" + mBigramCounts[i][j] + System.lineSeparator());
@@ -166,7 +166,27 @@ public class BigramModel {
      * @pre: fileName is a legal file path
      */
     public void loadModel(String fileName) throws IOException { // Question 4
-        // TODO: implement
+        BufferedReader vocReader = new BufferedReader(new FileReader(fileName + VOC_FILE_SUFFIX));
+        String line = vocReader.readLine();
+        int vocabSize = Integer.parseInt(line.split(" ")[0]);// read the first line to get the vocabulary size
+        mVocabulary = new String[vocabSize];// create a new array for the vocabulary
+        mBigramCounts = new int[vocabSize][vocabSize];// create a new 2D array for the counts
+        for (int i = 0; i < vocabSize; i++) {// read each line of the vocabulary file and add the word to the vocabulary array
+            line = vocReader.readLine();
+            String[] parts = line.split(",",2);// split the line into index and word (we split into at most 2 parts because the word may contain a comma)
+            mVocabulary[i] = parts[1];
+        }
+        vocReader.close();
+        BufferedReader countsReader = new BufferedReader(new FileReader(fileName + COUNTS_FILE_SUFFIX));
+        while ((line = countsReader.readLine()) != null) {// read each line of the counts file and add the count to the counts array
+            String[] parts = line.split("[:,]");// split the line into index1, index2 and count
+            int i = Integer.parseInt(parts[0]);
+            int j = Integer.parseInt(parts[1]);
+            int count = Integer.parseInt(parts[2]);
+            mBigramCounts[i][j] = count;
+        }
+        countsReader.close();
+            
     }
 
     /*
