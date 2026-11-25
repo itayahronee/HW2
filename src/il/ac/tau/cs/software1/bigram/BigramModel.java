@@ -196,8 +196,19 @@ public class BigramModel {
      * @post: if sentence is probable, according to the model, $ret = true, else, $ret = false
      */
     public boolean isLegalSentence(String sentence) { // Question 5
-        // TODO: implement
-        return false;
+        String[] words = sentence.trim().split("\\s+");// split the sentence into words by whitespace
+        if (words.length == 1 && words[0].isEmpty()) {// if the sentence is empty, it is legal
+            return true;
+        }
+        if (words.length == 1) {// if the sentence has only one word, it is legal if the word is in the vocabulary
+            return findIndex(mVocabulary, words[0]) != ELEMENT_NOT_FOUND;
+        }
+        for (int i = 0; i < words.length - 1; i++) {// check each bigram in the sentence
+            if (getBigramCount(words[i], words[i + 1]) == 0) {// if the bigram count is 0, the sentence is illegal
+                return false;
+            }
+        }
+        return true;
     }
 
     ///////////////////////////////////////////////////////////////////////////
