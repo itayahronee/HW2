@@ -20,6 +20,9 @@ public class InventoryComponent implements IComponent {
 		this.inventory = new NaiveInventory();
 		this.maxWeight = INITIAL_MAX_WEIGHT;
 	}
+	public NaiveInventory getInventory() {
+		return inventory;
+	}
 
 	public Vector2 getInventoryPosition() {
 		return INVENTORY_POSITION;
