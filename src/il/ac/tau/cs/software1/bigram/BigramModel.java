@@ -1,6 +1,7 @@
 package il.ac.tau.cs.software1.bigram;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.*;
 import java.util.Locale;
 
 public class BigramModel {
@@ -79,8 +80,31 @@ public class BigramModel {
      * @post: mBigramCounts = prev(mBigramCounts)
      */
     public String[] buildVocabularyIndex(String fileName) throws IOException { // Question 1
-        // TODO: implement
-        return null;
+        File textfile = new File(fileName);
+        BufferedReader BufferedReader = new BufferedReader(new FileReader(textfile));
+        int count = 0;
+        String line;
+        String[] vocabulary = new String[MAX_VOCABULARY_SIZE];
+        String[] tokens;
+        while ( (line = BufferedReader.readLine()) != null && count < MAX_VOCABULARY_SIZE) {// read each line of the file
+            tokens = line.split("\\s+");// split the line into tokens by whitespace
+            for (String token : tokens) { // for each token, normalize it and add it to the vocabulary if it's not already there
+                String normalizedWord = normalizeWord(token);
+                if (normalizedWord != null && findIndex(vocabulary, normalizedWord) == ELEMENT_NOT_FOUND) {
+                    vocabulary[count] = normalizedWord;
+                    count++;
+                }
+            }
+        }
+        BufferedReader.close();
+        if (count < MAX_VOCABULARY_SIZE){ // if the vocabulary is smaller than the max size, create a new array with the correct size and copy the words into it
+            String[] trueSizedVocabulary = new String[count];
+            for (int i = 0; i < count; i++) {
+                trueSizedVocabulary[i] = vocabulary[i];
+            }
+            return trueSizedVocabulary;
+        }
+        return vocabulary;
     }
 
     /*
