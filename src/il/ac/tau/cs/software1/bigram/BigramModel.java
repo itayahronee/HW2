@@ -87,8 +87,9 @@ public class BigramModel {
         String[] vocabulary = new String[MAX_VOCABULARY_SIZE];
         String[] tokens;
         while ( (line = BufferedReader.readLine()) != null && count < MAX_VOCABULARY_SIZE) {// read each line of the file
-            tokens = line.split("\\s+");// split the line into tokens by whitespace
-            for (String token : tokens) { // for each token, normalize it and add it to the vocabulary if it's not already there
+            tokens = line.trim().split("\\s+");// split the line into tokens by whitespace
+            for (int i = 0; i < tokens.length && count < MAX_VOCABULARY_SIZE; i++) {
+                String token = tokens[i];
                 String normalizedWord = normalizeWord(token);
                 if (normalizedWord != null && findIndex(vocabulary, normalizedWord) == ELEMENT_NOT_FOUND) {
                     vocabulary[count] = normalizedWord;
